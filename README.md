@@ -47,13 +47,13 @@ Whether you're a hardware enthusiast, firmware engineer, or technician, Flashrom
 > *(Replace these with your actual images once ready)*
 
 <p align="center">
-  <img src="assets/screenshot_main.png" width="70%">
+  <img src="assets/screenshot.png" width="70%">
   <br>
   <em>Main interface</em>
 </p>
 
 <p align="center">
-  <img src="assets/screenshot_log.png" width="70%">
+  <img src="assets/screenshot(2).png" width="70%">
   <br>
   <em>Live logging and chip detection</em>
 </p>
