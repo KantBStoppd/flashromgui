@@ -44,7 +44,6 @@ Whether you're a hardware enthusiast, firmware engineer, or technician, Flashrom
 
 ## 📸 **Screenshots**
 
-> *(Replace these with your actual images once ready)*
 
 <p align="center">
   <img src="assets/Screenshot.png" width="70%">
