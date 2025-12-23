@@ -41,7 +41,6 @@ Whether you're a hardware enthusiast, firmware engineer, or technician, Flashrom
 
 ### 📦 **Portable Distribution**
 - Fully packaged PyInstaller EXE  
-- Optional Inno Setup installer with VC++ runtime  
 - No Python installation required
 
 ---
@@ -88,3 +87,51 @@ Download the latest installer from the **Releases** page.
    - **Read** → Save a backup  
    - **Write** → Flash new firmware  
    - **Verify** → Confirm integrity
+5. Review logs in real time
+
+
+---
+
+## 🧪 **Development Setup**
+
+```bash
+git clone https://github.com/yourname/FlashromGUI.git
+cd FlashromGUI
+
+# Create environment
+python -m venv venv
+source venv/bin/activate  # Windows: venv\Scripts\activate
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Run the app
+python src/main.py
+```
+
+## 🐞 **Troubleshooting**
+
+### Flashrom not detected  
+Ensure Flashrom is included in your PATH or specify a custom path in Settings.
+
+### Programmer not recognized  
+Some programmers require drivers or elevated permissions.
+
+### Write operation fails  
+Check:
+- Chip is unlocked  
+- Correct programmer selected  
+- Firmware image matches chip size  
+
+---
+
+
+## 🙏 **Acknowledgements**
+
+FlashromGUI is built on top of the incredible work of the **Flashrom** project and the open‑source community.
+
+---
+
+## 📜 **License**
+
+MIT License — see `LICENSE` for details.
