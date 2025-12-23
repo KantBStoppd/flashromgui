@@ -2,7 +2,7 @@
 *A modern, user‑friendly graphical interface for Flashrom — designed for clarity, safety, and speed.*
 
 <p align="center">
-  <img src="assets/banner.png" width="80%" alt="FlashromGUI Banner">
+  <img src="https://raw.githubusercontent.com/kantbstoppd/flashromgui/main/assets/flashromgui-header-dark.png" alt="FlashromGUI Banner" />
 </p>
 
 <p align="center">
