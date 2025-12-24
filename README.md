@@ -2,7 +2,7 @@
 *A modern, user‑friendly graphical interface for Flashrom — designed for clarity, safety, and speed.*
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/kantbstoppd/flashromgui/main/assets/flashromgui-header-dark.jpeg" alt="FlashromGUI Banner" />
+  <img src="https://raw.githubusercontent.com/KantBStoppd/flashromgui/main/assets/flashromgui-header-dark.jpeg" alt="FlashromGUI Banner" />
 </p>
 <p align="center">
   <a href="https://www.dropbox.com/scl/fi/m2r4vzg6717hkrbt6wtqe/Flashrom_GUI_Installer.exe?rlkey=jplyixsxuvx2hq5miyxyxlwm5&st=outrez7l&dl=1">
@@ -96,7 +96,7 @@ Download the latest installer from the **Releases** page.
 ## 🧪 **Development Setup**
 
 ```bash
-git clone https://github.com/yourname/FlashromGUI.git
+git clone https://github.com/KantBStoppd/FlashromGUI.git
 cd FlashromGUI
 
 # Create environment
