@@ -64,7 +64,7 @@ Whether you're a hardware enthusiast, firmware engineer, or technician, Flashrom
 
 ## 🚀 **Installation**
 
-### **Option 1 — Inno Setup Installer (Recommended)**
+### **Option 1 — FlashromGUI Installer (Recommended)**
 - Includes VC++ runtime  
 - Creates Start Menu and Desktop shortcuts  
 - Clean uninstall support  
@@ -81,13 +81,14 @@ Download the latest installer from the **Releases** page.
 
 ### **Basic Workflow**
 1. Launch FlashromGUI  
-2. Select your programmer  
-3. Detect the chip  
-4. Choose an action:  
+2. Select your programmer    
+3. Choose an action:
+   - **Detect** → Chip Detection
+   - **Probe** → Read/Write/Verify/Detect with a chip probe for chips that are still connected to the board (in-circuit) 
    - **Read** → Save a backup  
    - **Write** → Flash new firmware  
    - **Verify** → Confirm integrity
-5. Review logs in real time
+4. Review logs in real time
 
 
 ---
