@@ -69,7 +69,7 @@ Whether you're a hardware enthusiast, firmware engineer, or technician, Flashrom
 - Creates Start Menu and Desktop shortcuts  
 - Clean uninstall support  
 
-Download the latest installer from the **Releases** page.
+Download the latest installer from the "Download Installer" button above.
 
 ### **Option 2 — Portable EXE**
 - No installation required  
@@ -107,7 +107,7 @@ source venv/bin/activate  # Windows: venv\Scripts\activate
 pip install -r requirements.txt
 
 # Run the app
-python src/main.py
+python flashrom_gui.py
 ```
 
 ## 🐞 **Troubleshooting**
