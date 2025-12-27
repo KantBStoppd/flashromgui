@@ -6,10 +6,18 @@ import subprocess
 import re
 import threading
 from flashrom_controller import FlashromController
+from PIL import Image
+
+def get_flashrom_path():
+    if hasattr(sys, "_MEIPASS"):
+        base = sys._MEIPASS
+    else:
+        base = os.path.dirname(os.path.abspath(__file__))
+    return os.path.join(base, "bin", "flashrom.exe")
 
 class MyApp(wx.App):
     def OnInit(self):
-        splash_path = os.path.join("assets", "splashscreen.png")
+        splash_path = resource_path("assets/splashscreen.png")
         bitmap = wx.Bitmap(splash_path, wx.BITMAP_TYPE_PNG)
         splash = wx.adv.SplashScreen(
             bitmap,
@@ -22,14 +30,19 @@ class MyApp(wx.App):
             wx.BORDER_SIMPLE | wx.STAY_ON_TOP
         )
         wx.Yield()
-        self.frame = FlashromGUI(None, "Flashrom GUI 5.0")
+        self.frame = FlashromGUI(None, "Flashrom GUI")
         self.SetTopWindow(self.frame)
         self.frame.Show()
         return True
 
 class ZoomableBitmap(wx.StaticBitmap):
     def __init__(self, parent, normal_path, zoomed_path, callback, grey_path=None, zoomed_grey_path=None):
-        super().__init__(parent, bitmap=wx.Bitmap(normal_path, wx.BITMAP_TYPE_PNG))
+        super().__init__(
+            parent,
+            bitmap=wx.BitmapBundle.FromBitmap(
+                wx.Bitmap(normal_path, wx.BITMAP_TYPE_PNG)
+            )
+        )
         self.normal_path = normal_path
         self.zoomed_path = zoomed_path
         self.grey_path = grey_path
@@ -42,14 +55,22 @@ class ZoomableBitmap(wx.StaticBitmap):
     def Enable(self, enable=True):
         super().Enable(enable)
         if enable:
-            self.SetBitmap(wx.Bitmap(self.normal_path, wx.BITMAP_TYPE_PNG))
+            self.SetBitmap(
+                wx.BitmapBundle.FromBitmap(
+                    wx.Bitmap(self.normal_path, wx.BITMAP_TYPE_PNG)
+                )
+            )
         else:
              if self.grey_path:
-                 self.SetBitmap(wx.Bitmap(self.grey_path, wx.BITMAP_TYPE_PNG))
+                 self.SetBitmap(
+                     wx.BitmapBundle.FromBitmap(
+                         wx.Bitmap(self.grey_path, wx.BITMAP_TYPE_PNG)
+                     )
+                 )
         
     def on_mouse_enter(self, event):
         bmp = wx.Bitmap(self.zoomed_path)
-        self.SetBitmap(bmp)
+        self.SetBitmap(wx.BitmapBundle.FromBitmap(bmp))
         self.SetSize(bmp.GetSize())
         self.GetParent().Layout()
         self.Refresh()
@@ -57,7 +78,7 @@ class ZoomableBitmap(wx.StaticBitmap):
 
     def on_mouse_leave(self, event):
         bmp = wx.Bitmap(self.normal_path)
-        self.SetBitmap(bmp)
+        self.SetBitmap(wx.BitmapBundle.FromBitmap(bmp))
         self.SetSize(bmp.GetSize())
         self.GetParent().Layout()
         self.Refresh()
@@ -67,23 +88,37 @@ class ZoomableBitmap(wx.StaticBitmap):
         if self.callback:
             self.callback(event)
         event.Skip()
-        
+
+def resource_path(relative_path):
+    """ Get absolute path to resource, works for dev and for PyInstaller """
+    base_path = getattr(sys, '_MEIPASS', os.path.dirname(os.path.abspath(__file__)))
+    return os.path.join(base_path, relative_path)
+
 class FlashromGUI(wx.Frame):
     def load_chip_list(self):
+        exe_path = get_flashrom_path()
+        chips = []
         try:
-            output = subprocess.check_output(["flashrom", "-L"], encoding="utf-8")
-            chips = []
+            output = subprocess.check_output([exe_path, "-L"], encoding="utf-8")
             for line in output.splitlines():
-                if line.strip() and not line.startswith("Supported"):
+                if line.strip() and not line.strip().startswith("Supported"):
                     chips.append(line.strip())
-            return chips
         except Exception as e:
-            self.log_output(f"Failed to load chip list:\n{e}")
-            return []
+            if hasattr(self, "log_ctrl"):
+                self.log_output(f"Failed to load chip list:\n{e}")
+            else:
+                print(f"Failed to load chip list:\n{e}")
+        return chips
+        
+    def populate_chip_list(self):
+        chip_list = self.load_chip_list()
+        self.chip_combo.Set(chip_list)
+
             
     def __init__(self, parent, title):
-        super().__init__(parent, title=title, size=(800, 600))    
-        self.SetIcon(wx.Icon("assets/icons/icon.ico", wx.BITMAP_TYPE_ANY))
+        super().__init__(parent, title=title, size=wx.Size(800, 600))
+        app_icon = resource_path("assets/icons/icon.ico")
+        self.SetIcon(wx.Icon(app_icon, wx.BITMAP_TYPE_ANY))
         self.statusbar = self.CreateStatusBar()
         self.panel = wx.Panel(self)
         self.panel.SetBackgroundColour(wx.Colour(106, 201, 255))
@@ -97,7 +132,7 @@ class FlashromGUI(wx.Frame):
         self.SetSizer(frame_sizer)
 
         icon_panel = wx.Panel(self.panel)
-        icon_panel.SetMinSize((800, 150))
+        icon_panel.SetMinSize(wx.Size(800, 150))
         icon_sizer = wx.BoxSizer(wx.HORIZONTAL)
         icon_panel.SetSizer(icon_sizer)
         
@@ -111,7 +146,7 @@ class FlashromGUI(wx.Frame):
             "verify": self.on_verify
         }
 
-        icon_dir = os.path.join(os.getcwd(), "assets", "icons", "zoombar")
+        icon_dir = resource_path("assets/icons/zoombar")
         
         icon_sizer.InsertStretchSpacer(0)
         for name, callback in icon_map.items():
@@ -127,10 +162,13 @@ class FlashromGUI(wx.Frame):
         chip_zoom_sizer = wx.BoxSizer(wx.VERTICAL)
         chip_zoom_sizer.Add(icon_panel, 0, wx.ALIGN_CENTER | wx.TOP, 10)
         chip_zoom_sizer.AddSpacer(10)
-        chip_zoom_sizer.Add(wx.StaticText(self.panel, wx.ID_ANY, "Select Chip", style=wx.BG_STYLE_SYSTEM), 0, wx.LEFT | wx.BOTTOM, 5)
-        chip_zoom_sizer.GetChildren()[-1].GetWindow().SetBackgroundColour(wx.SystemSettings.GetColour(wx.SYS_COLOUR_WINDOW))
-        chip_list = self.load_chip_list()
-        self.chip_combo = wx.ComboBox(self.panel, choices=chip_list, style=wx.CB_DROPDOWN)
+        self.chip_combo = wx.ComboBox(self.panel, choices=[], style=wx.CB_DROPDOWN)
+        wx.CallAfter(self.populate_chip_list)
+        label = wx.StaticText(self.panel, wx.ID_ANY, "Select Chip")
+        label.SetFont(wx.Font(9, wx.FONTFAMILY_SWISS, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD))
+        label.SetForegroundColour(wx.Colour(255, 255, 255))  # white text
+        label.SetBackgroundColour(wx.Colour(35, 38, 37))
+        chip_zoom_sizer.Add(label, 0, wx.LEFT | wx.BOTTOM, 5)
         chip_zoom_sizer.Add(self.chip_combo, 0, wx.EXPAND | wx.BOTTOM, 10)
 
         file_sizer = wx.BoxSizer(wx.HORIZONTAL)
@@ -148,8 +186,11 @@ class FlashromGUI(wx.Frame):
         programmer_sizer = wx.BoxSizer(wx.HORIZONTAL)
         programmer_sizer.AddStretchSpacer()
         combo_sizer = wx.BoxSizer(wx.VERTICAL)
-        combo_sizer.Add(wx.StaticText(self.panel, wx.ID_ANY, "Select Programmer", style=wx.BG_STYLE_SYSTEM), 0, wx.ALIGN_RIGHT | wx.BOTTOM, 5)
-        combo_sizer.GetChildren()[-1].GetWindow().SetBackgroundColour(wx.SystemSettings.GetColour(wx.SYS_COLOUR_WINDOW))
+        label = wx.StaticText(self.panel, wx.ID_ANY, "Select Programmer")
+        label.SetFont(wx.Font(9, wx.FONTFAMILY_SWISS, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD))
+        label.SetForegroundColour(wx.Colour(255, 255, 255))  # white text
+        label.SetBackgroundColour(wx.Colour(35, 38, 37))
+        combo_sizer.Add(label, 0, wx.LEFT | wx.BOTTOM, 5)
         self.programmer_combo = wx.ComboBox(self.panel, choices=[
             "ch341a_spi", "internal", "dummy", "nic3com", "nicrealtek", "nicnatsemi", "gfxnvidia",
             "raiden_debug_spi", "drkaiser", "satasii", "atahpt", "atavia", "atapromise", "it8212",
@@ -184,11 +225,7 @@ class FlashromGUI(wx.Frame):
         self.Bind(wx.EVT_COMBOBOX, self.on_programmer_selected, self.programmer_combo)
         self.Bind(wx.EVT_BUTTON, self.on_copy_log, self.copy_log_button)
         self.controller = FlashromController(on_output=self.log_output)
-        
-    def resource_path(relative_path):
-        base_path = getattr(sys, '_MEIPASS', os.path.abspath("."))
-        return os.path.join(base_path, relative_path)
-        
+    
     def detect_chip(self):
         try:
             result = subprocess.run(
@@ -220,22 +257,9 @@ class FlashromGUI(wx.Frame):
         else:
             self.log_ctrl.AppendText(f"Detected chip not in list. Please select manually.\n")
             
-    def load_chip_list(self):
-        try:
-            output = subprocess.check_output(["flashrom", "-L"], encoding="utf-8")
-            chips = []
-            for line in output.splitlines():
-                if line.strip() and not line.startswith("Supported"):
-                    chips.append(line.strip())
-            return chips
-        except Exception as e:
-            self.log_output(f"Failed to load chip list:\n{e}")
-            return []
-        
     def set_icons_enabled(self, enabled):
         for icon in self.icon_widgets.values():
             icon.Enable(enabled)
-
 
     def on_timer_tick(self, event):
         self.progress_value += 2
@@ -277,7 +301,7 @@ class FlashromGUI(wx.Frame):
 
         def task():
             try:
-                flashrom_path = rescource_path("bin/flashrom.exe")
+                flashrom_path = resource_path("bin/flashrom.exe")
                 full_cmd = [flashrom_path] + args
                 result = subprocess.run(full_cmd, capture_output=True, text=True)
                 wx.CallAfter(self.log_ctrl.AppendText, result.stdout + "\n" + result.stderr)
@@ -291,7 +315,6 @@ class FlashromGUI(wx.Frame):
                 wx.CallAfter(self.set_icons_enabled, True)
 
         threading.Thread(target=task).start()
-
 
     def on_detect(self, event=None):
         if not hasattr(self, 'controller'):
@@ -309,7 +332,7 @@ class FlashromGUI(wx.Frame):
             self.log_output(output)
             
             # Parse detected chip
-            match = re.search(r"Found\s+([^\n]+?\s+flash\s+chip", output)
+            match = re.search(output, r"Found\s+([^\n]+?\s+flash\s+chip")
             if match:
                 detected_chip = match.group(1).strip()
                 self.log_output(f"Detected chip: {detected_chip}")
@@ -331,7 +354,6 @@ class FlashromGUI(wx.Frame):
         chip_name = self.controller.on_detect_chip(programmer)
         self.chip_combo.SetValue(chip_name if chip_name else "Unknown")
 
-
     def on_read(self, event=None):
         with wx.FileDialog(
             self,
@@ -352,8 +374,6 @@ class FlashromGUI(wx.Frame):
         args = ["-p", self.get_programmer(), "-r", save_path]
         self.run_flashrom(args, "Reading chip...")
 
-
-
     def on_write(self, event=None):
         if not self.get_filepath():
             wx.MessageBox("Please select a ROM file.", "Error", wx.OK | wx.ICON_ERROR)
@@ -366,7 +386,6 @@ class FlashromGUI(wx.Frame):
 
         args = ["-p", self.get_programmer(), "-w", self.get_filepath()]
         self.run_flashrom(args, "Writing chip...")
-
 
     def on_verify(self, event=None):
         if not self.get_filepath():
@@ -398,7 +417,6 @@ class FlashromGUI(wx.Frame):
             wx.MessageBox(f"Log saved to:\n{log_path}", "Save Log", wx.ICON_INFORMATION)
         except IOError as e:
             wx.MessageBox(f"Failed to save log:\n{e}", "Error", wx.ICON_ERROR)
-
 
 if __name__ == "__main__":
     app = MyApp(0)
