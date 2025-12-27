@@ -76,7 +76,7 @@ Download the latest installer from the "Download Installer" button above.
 
 ### **Option 2 — Portable EXE**
 - No installation required  
-- Just extract and run `FlashromGUI.exe`
+- Download the latest release from the "Download Portable" button above.
 
 ---
 
