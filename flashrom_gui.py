@@ -1,5 +1,7 @@
 import wx
 import os
+import platform
+import shutil
 import sys
 import wx.adv
 import subprocess
@@ -8,12 +10,43 @@ import threading
 from flashrom_controller import FlashromController
 from PIL import Image
 
-def get_flashrom_path():
-    if hasattr(sys, "_MEIPASS"):
-        base = sys._MEIPASS
-    else:
-        base = os.path.dirname(os.path.abspath(__file__))
-    return os.path.join(base, "bin", "flashrom.exe")
+def get_flashrom_path(): 
+    system = platform.system() 
+    
+    if system == "Windows":
+        # Your bundled EXE 
+        return os.path.join(os.getcwd(), "flashrom", "flashrom.exe")
+
+        if system == "Darwin": # macOS
+            # 1. Try MacPorts 
+            macports_path = "/opt/local/bin/flashrom"
+            if os.path.exists(macports_path):
+                return macports_path
+
+            # 2. Try Homebrew (Intel)
+            brew_path_intel = "/usr/local/bin/flashrom"
+            if os.path.exists(brew_path_intel):
+                return brew_path_intel
+
+            # 3. Try Homebrew (Apple Silicon) 
+            brew_path_arm = "/opt/homebrew/bin/flashrom"
+            if os.path.exists(brew_path_arm):
+                return brew_path_arm
+
+            # 4. Try PATH
+            path = shutil.which("flashrom")
+            if path:
+                return path
+
+            raise FileNotFoundError("flashrom not found on macOS")
+
+        if system == "Linux":
+            path = shutil.which("flashrom")
+            if path:
+                return path
+            raise FileNotFoundError("flashrom not found on Linux")
+            
+        raise RuntimeError("Unsupported OS")
 
 class MyApp(wx.App):
     def OnInit(self):
@@ -90,25 +123,66 @@ class ZoomableBitmap(wx.StaticBitmap):
         event.Skip()
 
 def resource_path(relative_path):
-    """ Get absolute path to resource, works for dev and for PyInstaller """
-    base_path = getattr(sys, '_MEIPASS', os.path.dirname(os.path.abspath(__file__)))
+    """
+    Get absolute path to a resource.
+    Works for:
+      - PyInstaller one-file (_MEIPASS)
+      - PyInstaller one-folder
+      - macOS .app bundles (Contents/Resources)
+      - Running from source
+    """
+    # 1. PyInstaller one-file or one-folder
+    try:
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+
+    # 2. macOS .app bundle support
+    # If frozen and running inside MyApp.app/Contents/MacOS/
+    if getattr(sys, 'frozen', False) and sys.platform == "darwin":
+        macos_app_resources = os.path.abspath(
+            os.path.join(os.path.dirname(sys.executable), "..", "Resources")
+        )
+        if os.path.exists(macos_app_resources):
+            return os.path.join(macos_app_resources, relative_path)
+
+    # 3. Normal case (source or PyInstaller fallback)
     return os.path.join(base_path, relative_path)
 
 class FlashromGUI(wx.Frame):
     def load_chip_list(self):
-        exe_path = get_flashrom_path()
         chips = []
         try:
-            output = subprocess.check_output([exe_path, "-L"], encoding="utf-8")
-            for line in output.splitlines():
-                if line.strip() and not line.strip().startswith("Supported"):
-                    chips.append(line.strip())
-        except Exception as e:
+            exe_path = get_flashrom_path()
+
+            # Optional: helpful for debugging
             if hasattr(self, "log_ctrl"):
-                self.log_output(f"Failed to load chip list:\n{e}")
+                self.log_output(f"Running: {exe_path} -L")
+
+            output = subprocess.check_output(
+                [exe_path, "-L"],
+                encoding="utf-8",
+                stderr=subprocess.STDOUT
+            )
+
+            if not output.strip():
+                self.log_output("Flashrom returned no chip list output.")
+
+            for line in output.splitlines():
+                line = line.strip()
+                if line and not line.startswith("Supported"):
+                    chips.append(line)
+
+        except Exception as e:
+            message = f"Failed to load chip list:\n{e}"
+            if hasattr(self, "log_ctrl"):
+                self.log_output(message)
             else:
-                print(f"Failed to load chip list:\n{e}")
+                print(message)
+
         return chips
+
+
         
     def populate_chip_list(self):
         chip_list = self.load_chip_list()
@@ -296,19 +370,34 @@ class FlashromGUI(wx.Frame):
     def run_flashrom(self, args, action_label):
         self.statusbar.SetStatusText(action_label)
         self.log_ctrl.SetValue(f"{action_label}\nRunning: flashrom {' '.join(args)}\n")
-        
+
         self.set_icons_enabled(False)
 
         def task():
             try:
-                flashrom_path = resource_path("bin/flashrom.exe")
+                # Cross‑platform flashrom path
+                flashrom_path = get_flashrom_path()
                 full_cmd = [flashrom_path] + args
-                result = subprocess.run(full_cmd, capture_output=True, text=True)
-                wx.CallAfter(self.log_ctrl.AppendText, result.stdout + "\n" + result.stderr)
-                wx.CallAfter(self.statusbar.SetStatusText, "Done" if result.returncode == 0 else "Failed")
+
+                result = subprocess.run(
+                    full_cmd,
+                    capture_output=True,
+                    text=True
+                )
+
+                wx.CallAfter(
+                    self.log_ctrl.AppendText,
+                    result.stdout + "\n" + result.stderr
+                )
+                wx.CallAfter(
+                    self.statusbar.SetStatusText,
+                    "Done" if result.returncode == 0 else "Failed"
+                )
+
             except Exception as e:
                 wx.CallAfter(self.log_output, f"Error: {e}")
                 wx.CallAfter(self.statusbar.SetStatusText, "Error")
+
             finally:
                 wx.CallAfter(self.timer.Stop)
                 wx.CallAfter(self.progress_bar.Hide)
@@ -316,28 +405,31 @@ class FlashromGUI(wx.Frame):
 
         threading.Thread(target=task).start()
 
+
     def on_detect(self, event=None):
         if not hasattr(self, 'controller'):
             self.log_output("Flashrom controller not initialized.")
             return
-            
+
         try:
+            exe_path = get_flashrom_path()
+
             result = subprocess.run(
-                ["flashrom", "-p", "internal"],
+                [exe_path, "-p", "internal"],
                 capture_output=True,
-                text=True,
-                check=True
+                text=True
             )
+
             output = result.stdout
             self.log_output(output)
-            
-            # Parse detected chip
-            match = re.search(output, r"Found\s+([^\n]+?\s+flash\s+chip")
+
+            # Corrected regex (your original had args reversed)
+            match = re.search(r"Found\s+([^\n]+?\s+flash\s+chip)", output)
             if match:
                 detected_chip = match.group(1).strip()
                 self.log_output(f"Detected chip: {detected_chip}")
-                
-                # Sync with chip selection dropdown
+
+                # Sync with dropdown
                 choices = [c.lower() for c in self.chip_combo.GetItems()]
                 if detected_chip.lower() in choices:
                     self.chip_combo.SetValue(detected_chip)
@@ -346,13 +438,15 @@ class FlashromGUI(wx.Frame):
                     self.log_output("Detected chip not in list. Please select manually.")
             else:
                 self.log_output("No chip detected.")
-                
-        except subprocess.CalledProcessError as e:
-            self.log_output(f"Detection failed:\n{e.stderr}")
 
+        except Exception as e:
+            self.log_output(f"Detection failed:\n{e}")
+
+        # Controller fallback
         programmer = self.get_programmer()
         chip_name = self.controller.on_detect_chip(programmer)
         self.chip_combo.SetValue(chip_name if chip_name else "Unknown")
+
 
     def on_read(self, event=None):
         with wx.FileDialog(
@@ -365,7 +459,7 @@ class FlashromGUI(wx.Frame):
                 return
 
             save_path = save_dialog.GetPath()
-          
+
         self.progress_value = 0
         self.progress_bar.SetValue(0)
         self.progress_bar.Show()
@@ -374,11 +468,12 @@ class FlashromGUI(wx.Frame):
         args = ["-p", self.get_programmer(), "-r", save_path]
         self.run_flashrom(args, "Reading chip...")
 
+
     def on_write(self, event=None):
         if not self.get_filepath():
             wx.MessageBox("Please select a ROM file.", "Error", wx.OK | wx.ICON_ERROR)
             return
-           
+
         self.progress_value = 0
         self.progress_bar.SetValue(0)
         self.progress_bar.Show()
@@ -387,11 +482,12 @@ class FlashromGUI(wx.Frame):
         args = ["-p", self.get_programmer(), "-w", self.get_filepath()]
         self.run_flashrom(args, "Writing chip...")
 
+
     def on_verify(self, event=None):
         if not self.get_filepath():
-           wx.MessageBox("Please select a ROM file.", "Error", wx.OK | wx.ICON_ERROR)
-           return
-           
+            wx.MessageBox("Please select a ROM file.", "Error", wx.OK | wx.ICON_ERROR)
+            return
+
         self.progress_value = 0
         self.progress_bar.SetValue(0)
         self.progress_bar.Show()
@@ -399,6 +495,7 @@ class FlashromGUI(wx.Frame):
 
         args = ["-p", self.get_programmer(), "-v", self.get_filepath()]
         self.run_flashrom(args, "Verifying chip...")
+
         
     def on_probe(self, event):
         output = self.controller.on_probe_chip()
