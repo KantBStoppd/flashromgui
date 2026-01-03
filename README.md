@@ -6,10 +6,16 @@
 </p>
 <p align="center">
   <a href="https://www.dropbox.com/scl/fi/m2r4vzg6717hkrbt6wtqe/Flashrom_GUI_Installer.exe?rlkey=jplyixsxuvx2hq5miyxyxlwm5&st=outrez7l&dl=1">
-    <img src="https://img.shields.io/badge/Download%20Installer-3987da?style=for-the-badge&logo=windows" alt="Download FlashromGUI Installer">
+    <img src="https://img.shields.io/badge/Download%20Installer-3987da?style=for-the-badge&logo=windows&logoColor=white" alt="Download Windows Installer">
   </a>
   <a href="https://www.dropbox.com/scl/fi/5g3dx5i2y2hr4v2qube6z/flashrom_gui.exe?rlkey=z4p5pvthauf9c1pa837jrjw41&st=eeh00p0t&dl=1">
-    <img src="https://img.shields.io/badge/Download%20Portable-3987da?style=for-the-badge&logo=windows" alt="Download FlashromGUI Portable">
+    <img src="https://img.shields.io/badge/Download%20Portable-3987da?style=for-the-badge&logo=windows&logoColor=white" alt="Download Windows Portable">
+  </a>
+  <a href="https://www.dropbox.com/scl/fi/ynkz46k7hgit0kpgm1b2o/FlashromGUI-macOS.zip?rlkey=6f6bzpj8189795pr52kkxmvih&st=cn9kdk86&dl=1)">
+  <img src="https://img.shields.io/badge/Download%20macOS%20App-3987da?style=for-the-badge&logo=apple&logoColor=white" alt="Download macOS App">
+</a>
+">
+    <img src="https://img.shields.io/badge/Download%20macOS%20App-3987da?style=for-the-badge&logo=apple&logoColor=white" alt="Download macOS App">
   </a>
 </p>
 <p align="center">
