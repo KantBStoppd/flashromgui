@@ -14,9 +14,6 @@
   <a href="https://www.dropbox.com/scl/fi/ynkz46k7hgit0kpgm1b2o/FlashromGUI-macOS.zip?rlkey=6f6bzpj8189795pr52kkxmvih&st=cn9kdk86&dl=1)">
   <img src="https://img.shields.io/badge/Download%20macOS%20App-3987da?style=for-the-badge&logo=apple&logoColor=white" alt="Download macOS App">
 </a>
-">
-    <img src="https://img.shields.io/badge/Download%20macOS%20App-3987da?style=for-the-badge&logo=apple&logoColor=white" alt="Download macOS App">
-  </a>
 </p>
 <p align="center">
   <strong>Cross‑platform</strong> • <strong>Beginner‑friendly</strong> • <strong>Power‑user ready</strong>
