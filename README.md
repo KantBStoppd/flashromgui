@@ -11,7 +11,7 @@
   <a href="https://www.dropbox.com/scl/fi/5g3dx5i2y2hr4v2qube6z/flashrom_gui.exe?rlkey=z4p5pvthauf9c1pa837jrjw41&st=eeh00p0t&dl=1">
     <img src="https://img.shields.io/badge/Download%20Portable-3987da?style=for-the-badge&logo=windows&logoColor=white" alt="Download Windows Portable">
   </a>
-  <a href="https://www.dropbox.com/scl/fi/ynkz46k7hgit0kpgm1b2o/FlashromGUI-macOS.zip?rlkey=6f6bzpj8189795pr52kkxmvih&st=cn9kdk86&dl=1)">
+  <a href="https://www.dropbox.com/scl/fi/xsj45uid7ilerrmeveabw/FlashromGUI.dmg?rlkey=v5z7eenzczsjhpbsuwnpgum9r&st=7ytee9rg&dl=1)">
   <img src="https://img.shields.io/badge/Download%20macOS%20App-3987da?style=for-the-badge&logo=apple&logoColor=white" alt="Download macOS App">
 </a>
 </p>
