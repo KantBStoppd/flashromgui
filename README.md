@@ -6,7 +6,7 @@
 </p>
 <p align="center">
   <a href="https://www.dropbox.com/scl/fi/m2r4vzg6717hkrbt6wtqe/Flashrom_GUI_Installer.exe?rlkey=jplyixsxuvx2hq5miyxyxlwm5&st=outrez7l&dl=1">
-    <img src="https://img.shields.io/badge/Windows%20Installer-3987da?style=for-the-badge&logo=windows&logoColor=white" alt="Windows Installer">
+    <img src="https://img.shields.io/badge/Windows-Installer-3987da?style=for-the-badge&logo=windows&logoColor=white" alt="Windows Installer">
   </a>
   <a href="https://www.dropbox.com/scl/fi/5g3dx5i2y2hr4v2qube6z/flashrom_gui.exe?rlkey=z4p5pvthauf9c1pa837jrjw41&st=eeh00p0t&dl=1">
     <img src="https://img.shields.io/badge/Windows%20Portable-3987da?style=for-the-badge&logo=windows&logoColor=white" alt="Windows Portable">
