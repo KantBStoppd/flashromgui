@@ -6,10 +6,10 @@
 </p>
 <p align="center">
   <a href="https://www.dropbox.com/scl/fi/m2r4vzg6717hkrbt6wtqe/Flashrom_GUI_Installer.exe?rlkey=jplyixsxuvx2hq5miyxyxlwm5&st=outrez7l&dl=1">
-    <img src="https://img.shields.io/badge/Windows-Installer-3987da?style=for-the-badge&logo=windows&logoColor=white" alt="Windows Installer">
+    <img src="https://img.shields.io/badge/Windows%20Installer-3987da?style=for-the-badge&logo=data:image/svg+xml;base64,PHN2ZyBmaWxsPSJ3aGl0ZSIgdmlld0JveD0iMCAwIDI0IDI0IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxwYXRoIGQ9Ik0xMSAySDJ2OWg5VjJ6bTExIDBIMTJ2OWg5VjJ6TTEyIDEyaC05djloOVYxMnpNMTMgMTJ2OWg5di05aC05eiIvPjwvc3ZnPg==&logoColor=white">
   </a>
   <a href="https://www.dropbox.com/scl/fi/5g3dx5i2y2hr4v2qube6z/flashrom_gui.exe?rlkey=z4p5pvthauf9c1pa837jrjw41&st=eeh00p0t&dl=1">
-    <img src="https://img.shields.io/badge/Windows%20Portable-3987da?style=for-the-badge&logo=windows&logoColor=white" alt="Windows Portable">
+    <img src="https://img.shields.io/badge/Windows%20Portable-3987da?style=for-the-badge&logo=data:image/svg+xml;base64,PHN2ZyBmaWxsPSJ3aGl0ZSIgdmlld0JveD0iMCAwIDI0IDI0IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxwYXRoIGQ9Ik0xMSAySDJ2OWg5VjJ6bTExIDBIMTJ2OWg5VjJ6TTEyIDEyaC05djloOVYxMnpNMTMgMTJ2OWg5di05aC05eiIvPjwvc3ZnPg==&logoColor=white">
   </a>
   <a href="https://www.dropbox.com/scl/fi/xsj45uid7ilerrmeveabw/FlashromGUI.dmg?rlkey=v5z7eenzczsjhpbsuwnpgum9r&st=7ytee9rg&dl=1)">
   <img src="https://img.shields.io/badge/Download%20macOS%20DMG-3987da?style=for-the-badge&logo=apple&logoColor=white" alt="Download macOS App">
