@@ -70,16 +70,23 @@ Whether you're a hardware enthusiast, firmware engineer, or technician, Flashrom
 
 ## 🚀 **Installation**
 
-### **Option 1 — FlashromGUI Installer (Recommended)**
+### **Option 1 (Windows) — FlashromGUI Installer (Recommended)**
 - Includes VC++ runtime  
 - Creates Start Menu and Desktop shortcuts  
 - Clean uninstall support  
 
 Download the latest installer from the "Download Installer" button above.
 
-### **Option 2 — Portable EXE**
+### **Option 2 (Windows) — Portable EXE**
 - No installation required  
 - Download the latest release from the "Download Portable" button above.
+
+### **Option 3 (Mac)  - FlashromGUI.DMG**
+- Mount DMG
+- Drag FlashromGUI.app to Applications
+
+## **Option 4 (Linux) - flashrom_gui.py**
+- Follow Development Setup below
 
 ---
 
